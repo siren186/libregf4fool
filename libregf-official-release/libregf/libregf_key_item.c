@@ -510,6 +510,7 @@ int libregf_key_item_read_named_key(
 {
 	libregf_hive_bin_cell_t *hive_bin_cell = NULL;
 	static char *function                  = "libregf_key_item_read_named_key";
+	int result                             = 0;
 
 	if( hive_bins_list == NULL )
 	{
@@ -573,13 +574,15 @@ int libregf_key_item_read_named_key(
 
 		return( -1 );
 	}
-	if( libregf_named_key_read_data(
+	result = libregf_named_key_read_data(
 	     named_key,
 	     hive_bins_list->io_handle,
 	     hive_bin_cell->data,
 	     hive_bin_cell->size,
 	     named_key_hash,
 	     error ) != 1 )
+
+	if (result != 1)
 	{
 		libcerror_error_set(
 		 error,
@@ -590,7 +593,7 @@ int libregf_key_item_read_named_key(
 		 named_key_offset,
 		 named_key_offset );
 
-		return( -1 );
+		return(result);
 	}
 	return( 1 );
 }
@@ -2463,24 +2466,46 @@ int libregf_key_item_get_sub_key_descriptor_by_utf8_name(
 
 			goto on_error;
 		}
-		if( libregf_key_item_read_named_key(
-		     named_key,
-		     file_io_handle,
-		     hive_bins_list,
-		     safe_sub_key_descriptor->key_offset,
-		     safe_sub_key_descriptor->hash_value,
-		     error ) != 1 )
+		result = libregf_key_item_read_named_key(
+			named_key,
+			file_io_handle,
+			hive_bins_list,
+			safe_sub_key_descriptor->key_offset,
+			safe_sub_key_descriptor->hash_value,
+			error);
+		if(result != 1 )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read named key at offset: %" PRIu32 " (0x%08" PRIx32 ").",
-			 function,
-			 safe_sub_key_descriptor->key_offset,
-			 safe_sub_key_descriptor->key_offset );
+			if (result == 2)
+			{
+				if (libregf_named_key_free(
+					&named_key,
+					error) != 1)
+				{
+					libcerror_error_set(
+						error,
+						LIBCERROR_ERROR_DOMAIN_RUNTIME,
+						LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+						"%s: unable to free named key.",
+						function);
 
-			goto on_error;
+					goto on_error;
+				}
+
+				continue;
+			}
+			else
+			{
+				libcerror_error_set(
+					error,
+					LIBCERROR_ERROR_DOMAIN_IO,
+					LIBCERROR_IO_ERROR_READ_FAILED,
+					"%s: unable to read named key at offset: %" PRIu32 " (0x%08" PRIx32 ").",
+					function,
+					safe_sub_key_descriptor->key_offset,
+					safe_sub_key_descriptor->key_offset);
+
+				goto on_error;
+			}
 		}
 		result = libregf_named_key_compare_name_with_utf8_string(
 		          named_key,

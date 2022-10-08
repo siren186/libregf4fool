@@ -165,6 +165,7 @@ int libregf_named_key_read_data(
 	size_t name_index                            = 0;
 	size_t named_key_data_size                   = 0;
 	int result                                   = 0;
+	int is_not_nk                                = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	uint32_t value_32bit                         = 0;
@@ -264,6 +265,7 @@ int libregf_named_key_read_data(
 		 "%s: unsupported named key signature.",
 		 function );
 
+		is_not_nk = 1;
 		goto on_error;
 	}
 	byte_stream_copy_to_uint16_little_endian(
@@ -657,7 +659,14 @@ on_error:
 	}
 	named_key->name_size = 0;
 
-	return( -1 );
+	if (is_not_nk)
+	{
+		return(2);
+	}
+	else
+	{
+		return(-1);
+	}
 }
 
 /* Retrieves the key name size
