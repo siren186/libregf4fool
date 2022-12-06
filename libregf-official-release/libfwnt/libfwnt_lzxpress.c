@@ -1,7 +1,7 @@
 /*
  * LZXPRESS (de)compression functions
  *
- * Copyright (C) 2009-2021, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2009-2022, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -324,7 +324,6 @@ int libfwnt_lzxpress_decompress(
 			                 compression_tuple_size );
 		
 					compressed_data_offset += 2;
-
 				}
 				/* The size value is stored as
 				 * size - 3
@@ -359,7 +358,8 @@ int libfwnt_lzxpress_decompress(
 					libcnotify_printf(
 					 "\n" );
 				}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 				if( compression_tuple_size > 32771 )
 				{
 					libcerror_error_set(

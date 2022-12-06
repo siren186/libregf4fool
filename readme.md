@@ -8,7 +8,7 @@ libregf-msvc傻瓜编译包
 # 所使用到的库版本信息:
 |库|版本|链接|
 |--|--|--|
-|libregf|libregf-alpha-20220131|[libregf-alpha-20220131](https://github.com/libyal/libregf/archive/refs/tags/20220131.zip)|
+|libregf|libregf-20221026|[libregf-alpha-20221026](https://github.com/libyal/libregf/archive/refs/tags/20221026.zip)|
 
 
 # 编译前准备工作
