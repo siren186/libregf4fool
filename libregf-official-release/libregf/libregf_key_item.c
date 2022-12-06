@@ -580,7 +580,7 @@ int libregf_key_item_read_named_key(
 	     hive_bin_cell->data,
 	     hive_bin_cell->size,
 	     named_key_hash,
-	     error ) != 1 )
+	     error );
 
 	if (result != 1)
 	{
